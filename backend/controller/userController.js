@@ -1,4 +1,33 @@
 const User = require('../models/User');
+const { Parser } = require('json2csv');
+const fs = require('fs');
+const path = require('path');
+
+const exportUsersToCSV = async (req, res) => {
+  try {
+    const users = await User.find().lean(); // Fetch all users
+
+    if (users.length === 0) {
+      return res.status(404).json({ message: 'No users found' });
+    }
+
+    const fields = ['_id', 'firstName', 'lastName', 'email', 'mobile', 'createdAt'];
+    const opts = { fields };
+    const parser = new Parser(opts);
+    const csv = parser.parse(users);
+
+    const filePath = path.join(__dirname, '../exports/users.csv');
+    fs.writeFileSync(filePath, csv);
+
+    res.download(filePath, 'users.csv', (err) => {
+      if (err) {
+        res.status(500).send({ message: 'Error downloading CSV' });
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 const createUser = async (req, res) => {
   try {
@@ -98,5 +127,6 @@ module.exports = {
   getAllUsers,
   getUserById,
   updateUser,
-  deleteUser
+  deleteUser,
+  exportUsersToCSV
 };

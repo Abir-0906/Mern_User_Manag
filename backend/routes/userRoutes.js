@@ -7,15 +7,18 @@ const {
   getAllUsers,
   getUserById: userId,
   updateUser,
-  deleteUser
+  deleteUser,
+  exportUsersToCSV
 } = require('../controller/userController');
 
-// Use multer middleware for POST and PUT
+// Multer routes
 router.post('/', upload.single('profile'), createUser);
 router.put('/:id', upload.single('profile'), updateUser);
 
+router.get('/export/csv', exportUsersToCSV); // <-- Place this before `/:id`
 router.get('/', getAllUsers);
 router.get('/:id', userId);
 router.delete('/:id', deleteUser);
+
 
 module.exports = router;
