@@ -1,20 +1,21 @@
 const express = require('express');
 const router = express.Router();
-
+const upload = require('../middleware/upload');
 
 const {
   createUser,
   getAllUsers,
-  getUserById: userId,         // renamed
+  getUserById: userId,
   updateUser,
   deleteUser
 } = require('../controller/userController');
 
-// Routes
-router.post('/', createUser);
+// Use multer middleware for POST and PUT
+router.post('/', upload.single('profile'), createUser);
+router.put('/:id', upload.single('profile'), updateUser);
+
 router.get('/', getAllUsers);
-router.get('/:id', userId);         
-router.put('/:id', updateUser);
+router.get('/:id', userId);
 router.delete('/:id', deleteUser);
 
 module.exports = router;

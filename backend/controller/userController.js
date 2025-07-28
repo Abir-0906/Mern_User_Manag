@@ -2,7 +2,8 @@ const User = require('../models/User');
 
 const createUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, mobile, gender, status, location, profile } = req.body;
+    const { firstName, lastName, email, mobile, gender, status, location } = req.body;
+    const profile = req.file ? req.file.path : '';
 
     const user = new User({
       firstName,
@@ -22,14 +23,26 @@ const createUser = async (req, res) => {
   }
 };
 
+
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().sort({ createdAt: -1 });
-    res.json(users);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
+
+    const users = await User.find().sort({ createdAt: -1 }).skip(skip).limit(limit);
+    const total = await User.countDocuments();
+
+    res.json({
+      users,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 const getUserById = async (req, res) => {
   try {
@@ -43,22 +56,22 @@ const getUserById = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, mobile, gender, status, location, profile } = req.body;
+    const { firstName, lastName, email, mobile, gender, status, location } = req.body;
+    const profile = req.file ? req.file.path : undefined;
 
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      {
-        firstName,
-        lastName,
-        email,
-        mobile,
-        gender,
-        status,
-        location,
-        profile
-      },
-      { new: true }
-    );
+    const updateData = {
+      firstName,
+      lastName,
+      email,
+      mobile,
+      gender,
+      status,
+      location,
+    };
+
+    if (profile) updateData.profile = profile;
+
+    const user = await User.findByIdAndUpdate(req.params.id, updateData, { new: true });
 
     if (!user) return res.status(404).json({ message: 'User not found' });
     res.json(user);
@@ -66,6 +79,7 @@ const updateUser = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
 
 const deleteUser = async (req, res) => {
   try {
