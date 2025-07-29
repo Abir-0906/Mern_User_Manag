@@ -15,7 +15,7 @@ const {
 router.post('/', upload.single('profile'), createUser);
 router.put('/:id', upload.single('profile'), updateUser);
 
-router.get('/export/csv', exportUsersToCSV); // <-- Place this before `/:id`
+router.get('/export/csv', exportUsersToCSV); 
 router.get('/', getAllUsers);
 router.get('/:id', userId);
 router.delete('/:id', deleteUser);
