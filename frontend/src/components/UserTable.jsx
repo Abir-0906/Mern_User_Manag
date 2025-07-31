@@ -56,7 +56,7 @@ function UserTable({ users, onDelete, isLoading }) {
                 <td className="py-3 px-4">
                   {user.profile ? (
                     <img
-                      src={`http://localhost:5000/${user.profile}`}
+                      src={`https://mern-user-manag-2.onrender.com/${user.profile}`}
                       alt="profile"
                       className="w-10 h-10 rounded-full object-cover"
                     />

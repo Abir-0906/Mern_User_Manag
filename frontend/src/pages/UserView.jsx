@@ -12,7 +12,7 @@ const UserView = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/users/${id}`);
+        const response = await axios.get(`https://mern-user-manag-2.onrender.com/api/users/${id}`);
         setUser(response.data);
         setLoading(false);
       } catch (err) {
@@ -77,7 +77,7 @@ const UserView = () => {
         <div className="flex flex-col items-center">
           {user.profile ? (
             <img
-              src={`http://localhost:5000/${user.profile}`}
+              src={`https://mern-user-manag-2.onrender.com/${user.profile}`}
               alt="Profile"
               className="w-40 h-40 rounded-full object-cover border-4 border-blue-100"
             />

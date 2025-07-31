@@ -24,7 +24,7 @@ const UserForm = () => {
 
   useEffect(() => {
     if (id) {
-      axios.get(`http://localhost:5000/api/users/${id}`).then((res) => {
+      axios.get(`https://mern-user-manag-2.onrender.com/api/users/${id}`).then((res) => {
         const { firstName, lastName, email, mobile, gender, status, location, profile } = res.data;
         setFormData({ firstName, lastName, email, mobile, gender, status, location, profile });
       });
@@ -69,14 +69,14 @@ const UserForm = () => {
 
     try {
       if (id) {
-        await axios.put(`http://localhost:5000/api/users/${id}`, data, {
+        await axios.put(`https://mern-user-manag-2.onrender.com/api/users/${id}`, data, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
         toast.success("User updated successfully");
       } else {
-        await axios.post("http://localhost:5000/api/users", data, {
+        await axios.post("https://mern-user-manag-2.onrender.com/api/users", data, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
