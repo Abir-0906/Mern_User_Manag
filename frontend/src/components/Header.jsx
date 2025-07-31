@@ -1,13 +1,14 @@
-import React from 'react'
+// src/components/Header.jsx
+import React from 'react';
 
-const Header = () => {
+function Header() {
   return (
-    <div>
-
-        Header
-      
-    </div>
-  )
+    <header className="bg-black text-white py-3 px-6 flex justify-center items-center">
+      <h1 className="text-lg font-semibold text-center">
+        MERN stack developer practical task
+      </h1>
+    </header>
+  );
 }
 
-export default Header
+export default Header;

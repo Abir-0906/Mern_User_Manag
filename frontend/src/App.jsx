@@ -4,10 +4,12 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import UserList from './pages/UserList';
 import UserForm from './pages/UserForm';
 import UserView from './pages/UserView';
+import Header from './components/Header';
 
 function App() {
   return (
     <Router>
+      <Header /> 
       <Routes>
         <Route path="/" element={<UserList />} />
         <Route path="/add" element={<UserForm />} />

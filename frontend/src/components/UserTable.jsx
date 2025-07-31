@@ -1,62 +1,95 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function UserTable({ users, onDelete }) {
+function UserTable({ users, onDelete, isLoading }) {
   const navigate = useNavigate();
 
+  const handleView = (id) => {
+    navigate(`/view/${id}`);
+  };
+
   return (
-    <table border="1" cellPadding="8" cellSpacing="0" width="100%">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Full Name</th>
-          <th>Email</th>
-          <th>Gender</th>
-          <th>Status</th>
-          <th>Location</th>
-          <th>Profile</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {users.length === 0 ? (
-          <tr><td colSpan="8">No users found</td></tr>
-        ) : (
-          users.map((user, index) => (
-            <tr key={user._id}>
-              <td>{index + 1}</td>
-              <td>{`${user.firstName} ${user.lastName}`}</td>
-              <td>{user.email}</td>
-              <td>{user.gender}</td>
-              <td>
-                <select defaultValue={user.status}>
-                  <option value="Active">Active</option>
-                  <option value="InActive">InActive</option>
-                </select>
-              </td>
-              <td>{user.location}</td>
-              <td>
-                {user.profile ? (
-                  <img
-                    src={`http://localhost:5000/${user.profile}`}
-                    alt="profile"
-                    width={40}
-                    height={40}
-                  />
-                ) : (
-                  'N/A'
-                )}
-              </td>
-              <td>
-                <button onClick={() => navigate(`/view/${user._id}`)}>View</button>{' '}
-                <button onClick={() => navigate(`/edit/${user._id}`)}>Edit</button>{' '}
-                <button onClick={() => onDelete(user._id)}>Delete</button>
+    <div className="overflow-x-auto">
+      <table className="min-w-full bg-white rounded-lg overflow-hidden">
+        <thead className="bg-gray-100">
+          <tr>
+            <th className="py-3 px-4 text-left font-semibold text-gray-700">#</th>
+            <th className="py-3 px-4 text-left font-semibold text-gray-700">Full Name</th>
+            <th className="py-3 px-4 text-left font-semibold text-gray-700">Email</th>
+            <th className="py-3 px-4 text-left font-semibold text-gray-700">Gender</th>
+            <th className="py-3 px-4 text-left font-semibold text-gray-700">Status</th>
+            <th className="py-3 px-4 text-left font-semibold text-gray-700">Location</th>
+            <th className="py-3 px-4 text-left font-semibold text-gray-700">Profile</th>
+            <th className="py-3 px-4 text-left font-semibold text-gray-700">Actions</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-200">
+          {isLoading ? (
+            <tr>
+              <td colSpan="8" className="py-4 px-4 text-center text-gray-500">
+                Loading users...
               </td>
             </tr>
-          ))
-        )}
-      </tbody>
-    </table>
+          ) : users.length === 0 ? (
+            <tr>
+              <td colSpan="8" className="py-4 px-4 text-center text-gray-500">
+                No users found
+              </td>
+            </tr>
+          ) : (
+            users.map((user, index) => (
+              <tr key={user._id} className="hover:bg-gray-50 transition-colors">
+                <td className="py-3 px-4 text-gray-700">{index + 1}</td>
+                <td className="py-3 px-4 text-gray-700">{`${user.firstName} ${user.lastName}`}</td>
+                <td className="py-3 px-4 text-gray-700 truncate max-w-xs">{user.email}</td>
+                <td className="py-3 px-4 text-gray-700 capitalize">{user.gender}</td>
+                <td className="py-3 px-4">
+                  <select 
+                    defaultValue={user.status}
+                    className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  >
+                    <option value="Active">Active</option>
+                    <option value="InActive">InActive</option>
+                  </select>
+                </td>
+                <td className="py-3 px-4 text-gray-700">{user.location}</td>
+                <td className="py-3 px-4">
+                  {user.profile ? (
+                    <img
+                      src={`http://localhost:5000/${user.profile}`}
+                      alt="profile"
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-gray-400">N/A</span>
+                  )}
+                </td>
+                <td className="py-3 px-4 space-x-2">
+                  <button
+                    onClick={() => handleView(user._id)}
+                    className="px-3 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 transition-colors"
+                  >
+                    View
+                  </button>
+                  <button
+                    onClick={() => navigate(`/edit/${user._id}`)}
+                    className="px-3 py-1 bg-yellow-100 text-yellow-600 rounded hover:bg-yellow-200 transition-colors"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => onDelete(user._id)}
+                    className="px-3 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 transition-colors"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
   );
 }
 

@@ -53,22 +53,35 @@ const createUser = async (req, res) => {
 };
 
 
+
 const getAllUsers = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 5;
-    const skip = (page - 1) * limit;
+    const { page = 1, limit = 10, search = "" } = req.query;
 
-    const users = await User.find().sort({ createdAt: -1 }).skip(skip).limit(limit);
-    const total = await User.countDocuments();
+    // Construct search query
+    const searchQuery = {
+      $or: [
+        { firstName: { $regex: search, $options: 'i' } },
+        { lastName: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+      ]
+    };
 
-    res.json({
+    const users = await User.find(search ? searchQuery : {})
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+
+    const total = await User.countDocuments(search ? searchQuery : {});
+
+    res.status(200).json({
       users,
-      totalPages: Math.ceil(total / limit),
-      currentPage: page
+      total,
+      page: Number(page),
+      pages: Math.ceil(total / limit),
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Error fetching users:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
